@@ -67,6 +67,11 @@ pb_download <- function(file = NULL,
     dest <- file.path(dest, df$file_name[i])
   }
   # dest should now be of length df
+  if(nrow(df)!=length(file)) {
+		iMissingFileIndices<- which( !(file %in% df$file_name))
+		stop("Error: following files requested for download, yet not available on Github:\n",
+			paste(file[iMissingFileIndices],collapse=";"))
+  }
   df$dest <- dest
 
 
