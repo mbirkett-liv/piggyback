@@ -68,12 +68,12 @@ pb_upload <- function(file,
   ## start fresh
   memoise::forget(pb_info)
 
-  out <- lapply(file, function(f)
+  out <- lapply(seq_along(file), function(iFileIndex)
     pb_upload_file(
-      f,
+      file[iFileIndex],
       repo,
       tag,
-      name,
+      if(is.null(name)) NULL else name[iFileIndex],
       overwrite,
       use_timestamps,
       show_progress,
@@ -169,12 +169,12 @@ pb_upload_file <- function(file,
 
   if (show_progress) cli::cli_alert_info("Uploading {.file {name}} ...")
 
-  releases <- pb_releases(repo = repo)
+  releases <- pb_releases(repo = repo,.token=.token)
   upload_url <- releases$upload_url[releases$tag_name == tag]
 
   r <- httr::RETRY(
     verb = "POST",
-    url = sub("\\{.+$", "", upload_url),
+    url = sub("\\{.+$", "", upload_url), # rid anything from { to end.
     query = list(name = name),
     httr::add_headers(Authorization = paste("token", .token)),
     body = httr::upload_file(file_path),
