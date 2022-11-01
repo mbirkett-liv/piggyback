@@ -111,6 +111,7 @@ get_release_assets <- function(releases, r, .token) {
   return(release_assets)
 }
 
+#' @export
 pb_info <- function(repo = guess_repo(),
                     tag = NULL,
                     .token = gh::gh_token()) {
